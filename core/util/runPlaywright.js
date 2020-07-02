@@ -52,8 +52,7 @@ async function processScenariosBrowsersView (scenario, variantOrScenarioLabelSaf
   // Info for user.
   if (isReference) {
     console.log(chalk.blue('CREATING NEW REFERENCE FILE'));
-  }
-  else {
+  } else {
     console.log(chalk.blue('CREATING TEST FILE'));
   }
 
@@ -71,8 +70,7 @@ async function processScenariosBrowsersView (scenario, variantOrScenarioLabelSaf
     const beforeScriptPath = path.resolve(engineScriptsPath, onBeforeScript);
     if (fs.existsSync(beforeScriptPath)) {
       await require(beforeScriptPath)(page, scenario, viewport, isReference, browser, config, browserType);
-    }
-    else {
+    } else {
       console.warn(chalk.yellow('WARNING: script not found: ' + beforeScriptPath));
     }
   }
@@ -84,7 +82,7 @@ async function processScenariosBrowsersView (scenario, variantOrScenarioLabelSaf
   const readyEvent = scenario.readyEvent || config.readyEvent;
   if (readyEvent) {
     await page.waitForEvent('console', (message) => {
-      return message == readyEvent;
+      return message === readyEvent;
     });
   }
 
@@ -104,12 +102,11 @@ async function processScenariosBrowsersView (scenario, variantOrScenarioLabelSaf
     const readyScriptPath = path.resolve(engineScriptsPath, onReadyScript);
     if (fs.existsSync(readyScriptPath)) {
       await require(readyScriptPath)(page, scenario, viewport, isReference, browser, config, browserType);
-    }
-    else {
+    } else {
       console.warn(chalk.yellow('WARNING: script not found: ' + readyScriptPath));
     }
   }
-  
+
   // Init files paths.
   // TODO: Multi selectors !
   const currentTestPair = engineTools.generateTestPair(config, scenario, viewport, variantOrScenarioLabelSafe, scenarioLabelSafe, 0, 'document', browserType);
@@ -123,7 +120,7 @@ async function processScenariosBrowsersView (scenario, variantOrScenarioLabelSaf
   });
   await browser.close();
 
-  const compareConfig = {testPairs: []};
+  const compareConfig = { testPairs: [] };
   if (!isReference) {
     compareConfig.testPairs.push(currentTestPair);
   }

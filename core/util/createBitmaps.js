@@ -86,12 +86,22 @@ function saveViewportIndexes (viewport, index) {
 }
 
 function saveBrowserTypesIndexes (browserType, index) {
-  return {label: browserType, bIndex: index};
+  return { label: browserType, bIndex: index };
+}
+
+function getDefaultBrowserType (config) {
+  if (config.engine.startsWith('playwright')) {
+    return 'chromium';
+  } else {
+    return 'chrome';
+  }
 }
 
 function delegateScenarios (config) {
   var scenarios = [];
   var scenarioViews = [];
+
+  config.browsersTypes = config.browsersTypes || [ getDefaultBrowserType(config) ];
 
   config.viewports = config.viewports.map(saveViewportIndexes);
   config.browsersTypes = config.browsersTypes.map(saveBrowserTypesIndexes);
@@ -132,7 +142,7 @@ function delegateScenarios (config) {
           config: config,
           id: scenarioViewId++
         });
-      })
+      });
     });
   });
 

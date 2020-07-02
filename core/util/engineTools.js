@@ -48,7 +48,7 @@ function makeSafe (str) {
   return str.replace(/[ /]/g, '_');
 }
 
-function getFilename (fileNameTemplate, outputFileFormatSuffix, configId, scenarioIndex, scenarioLabelSafe, selectorIndex, selectorLabel, viewportIndex, viewportLabel) {
+function getFilename (fileNameTemplate, outputFileFormatSuffix, configId, scenarioIndex, scenarioLabelSafe, selectorIndex, selectorLabel, viewportIndex, viewportLabel, browserTypeIndex, browserTypeLabel) {
   var fileName = fileNameTemplate
     .replace(/\{configId\}/, configId)
     .replace(/\{scenarioIndex\}/, scenarioIndex)
@@ -57,6 +57,8 @@ function getFilename (fileNameTemplate, outputFileFormatSuffix, configId, scenar
     .replace(/\{selectorLabel\}/, selectorLabel)
     .replace(/\{viewportIndex\}/, viewportIndex)
     .replace(/\{viewportLabel\}/, makeSafe(viewportLabel))
+    .replace(/\{browserTypeIndex\}/, browserTypeIndex)
+    .replace(/\{browserTypeLabel\}/, browserTypeLabel)
     .replace(/[^a-z0-9_-]/gi, ''); // remove anything that's not a letter or a number or dash or underscore.
 
   var extRegExp = new RegExp(outputFileFormatSuffix + '$', 'i');
@@ -82,7 +84,7 @@ function getScenarioExpect (scenario) {
   return expect;
 }
 
-function generateTestPair (config, scenario, viewport, variantOrScenarioLabelSafe, scenarioLabelSafe, selectorIndex, selector) {
+function generateTestPair (config, scenario, viewport, variantOrScenarioLabelSafe, scenarioLabelSafe, selectorIndex, selector, browserType) {
   const cleanedSelectorName = getSelectorName(selector);
   const fileName = getFilename(
     config._fileNameTemplate,
@@ -93,7 +95,9 @@ function generateTestPair (config, scenario, viewport, variantOrScenarioLabelSaf
     selectorIndex,
     cleanedSelectorName,
     viewport.vIndex,
-    viewport.label
+    viewport.label,
+    browserType.bIndex,
+    browserType.label
   );
   const referenceFilePath = config._bitmapsReferencePath + '/' + getFilename(
     config._fileNameTemplate,
@@ -104,7 +108,9 @@ function generateTestPair (config, scenario, viewport, variantOrScenarioLabelSaf
     selectorIndex,
     cleanedSelectorName,
     viewport.vIndex,
-    viewport.label
+    viewport.label,
+    browserType.bIndex,
+    browserType.label
   );
   const testFilePath = config._bitmapsTestPath + '/' + config.screenshotDateTime + '/' + fileName;
 

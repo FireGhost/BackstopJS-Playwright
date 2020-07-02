@@ -4,6 +4,7 @@ var each = require('./each');
 var pMap = require('p-map');
 
 var runPuppet = require('./runPuppet');
+var runPlaywright = require('./runPlaywright');
 
 const ensureDirectoryPath = require('./ensureDirectoryPath');
 var logger = require('./logger')('createBitmaps');
@@ -35,6 +36,8 @@ function decorateConfigForCapture (config, isReference) {
   }
   configJSON.scenarios = configJSON.scenarios || [];
   ensureViewportLabel(configJSON);
+
+  configJSON.browsers = configJSON.browsers || [];
 
   var totalScenarioCount = configJSON.scenarios.length;
 
@@ -82,11 +85,16 @@ function saveViewportIndexes (viewport, index) {
   return Object.assign({}, viewport, { vIndex: index });
 }
 
+function saveBrowserTypesIndexes (browserType, index) {
+  return {label: browserType, bIndex: index};
+}
+
 function delegateScenarios (config) {
   var scenarios = [];
   var scenarioViews = [];
 
   config.viewports = config.viewports.map(saveViewportIndexes);
+  config.browsersTypes = config.browsersTypes.map(saveBrowserTypesIndexes);
 
   // casper.each(scenarios, function (casper, scenario, i) {
   config.scenarios.forEach(function (scenario, i) {
@@ -116,12 +124,15 @@ function delegateScenarios (config) {
     }
 
     desiredViewportsForScenario.forEach(function (viewport) {
-      scenarioViews.push({
-        scenario: scenario,
-        viewport: viewport,
-        config: config,
-        id: scenarioViewId++
-      });
+      config.browsersTypes.forEach(function (browserType) {
+        scenarioViews.push({
+          scenario: scenario,
+          viewport: viewport,
+          browserType: browserType,
+          config: config,
+          id: scenarioViewId++
+        });
+      })
     });
   });
 
@@ -129,6 +140,8 @@ function delegateScenarios (config) {
 
   if (config.engine.startsWith('puppet')) {
     return pMap(scenarioViews, runPuppet, { concurrency: asyncCaptureLimit });
+  } else if (config.engine.startsWith('playwright')) {
+    return pMap(scenarioViews, runPlaywright, { concurrency: asyncCaptureLimit });
   } else if (/chrom./i.test(config.engine)) {
     logger.error(`Chromy is no longer supported in version 5+. Please use version 4.x.x for chromy support.`);
   } else {

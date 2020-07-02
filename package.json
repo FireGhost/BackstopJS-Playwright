@@ -95,6 +95,7 @@
     "os": "^0.1.1",
     "p-map": "^1.1.1",
     "path": "^0.12.7",
+    "playwright": "^1.1.1",
     "portfinder": "^1.0.17",
     "puppeteer": "^2.0.0",
     "resolve": "^1.11.1",

@@ -77,7 +77,11 @@ async function processScenariosBrowsersView (scenario, variantOrScenarioLabelSaf
   }
 
   // Go to page.
-  await page.goto(scenario.url);
+  let url = scenario.url;
+  if (isReference && scenario.referenceUrl) {
+    url = scenario.referenceUrl;
+  }
+  await page.goto(url);
 
   // Wait for the specific console message.
   const readyEvent = scenario.readyEvent || config.readyEvent;

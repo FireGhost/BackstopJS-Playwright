@@ -1,5 +1,5 @@
 {
-  "name": "backstopjs",
+  "name": "backstopjs-playwright",
   "version": "5.1.0",
   "description": "BackstopJS: Catch CSS curveballs.",
   "bin": {
@@ -39,9 +39,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/garris/backstopjs.git"
+    "url": "https://github.com/FireGhost/BackstopJS-Playwright"
   },
-  "author": "https://github.com/garris/BackstopJS/graphs/contributors",
+  "author": "https://github.com/FireGhost/BackstopJS-Playwright/graphs/contributors",
   "license": "MIT",
   "main": "core/runner.js",
   "devDependencies": {

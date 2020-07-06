@@ -16,6 +16,7 @@ module.exports = function (args) {
   const viewport = args.viewport;
   const config = args.config;
   const browserType = args.browserType;
+  const scenarioViewId = args.id;
   const scenarioLabelSafe = engineTools.makeSafe(scenario.label);
   const variantOrScenarioLabelSafe = scenario._parent ? engineTools.makeSafe(scenario._parent.label) : scenarioLabelSafe;
 
@@ -25,10 +26,10 @@ module.exports = function (args) {
   config._outputFileFormatSuffix = '.' + ((config.outputFormat && config.outputFormat.match(/jpg|jpeg/)) || 'png');
   config._configId = config.id || engineTools.genHash(config.backstopConfigFileName);
 
-  return processScenariosBrowsersView(scenario, variantOrScenarioLabelSafe, scenarioLabelSafe, viewport, config, browserType);
+  return processScenariosBrowsersView(scenario, variantOrScenarioLabelSafe, scenarioLabelSafe, viewport, config, browserType, scenarioViewId);
 };
 
-async function processScenariosBrowsersView (scenario, variantOrScenarioLabelSafe, scenarioLabelSafe, viewport, config, browserType) {
+async function processScenariosBrowsersView (scenario, variantOrScenarioLabelSafe, scenarioLabelSafe, viewport, config, browserType, scenarioViewId) {
   const isReference = config.isReference;
 
   const engineScriptsPath = config.env.engine_scripts || config.env.engine_scripts_default;
@@ -113,12 +114,13 @@ async function processScenariosBrowsersView (scenario, variantOrScenarioLabelSaf
   const currentFilePath = isReference ? currentTestPair.reference : currentTestPair.test;
   ensureDirectoryPath(currentFilePath);
 
-  console.log(chalk.blue(`Say cheese: ${currentFilePath}`));
+  console.log(chalk.green(`Say cheese: ${currentFilePath}`));
   await page.screenshot({
     path: (currentFilePath),
     fullPage: true
   });
   await browser.close();
+  console.log(chalk.blue(`X Closed browser ${scenarioViewId}`));
 
   const compareConfig = { testPairs: [] };
   if (!isReference) {

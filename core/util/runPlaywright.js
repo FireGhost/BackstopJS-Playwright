@@ -81,24 +81,27 @@ async function processScenariosBrowsersView (scenario, variantOrScenarioLabelSaf
   if (isReference && scenario.referenceUrl) {
     url = scenario.referenceUrl;
   }
-  await page.goto(url);
+  await page.goto(url).catch(e => printError(e, viewport, scenario));
 
   // Wait for the specific console message.
   const readyEvent = scenario.readyEvent || config.readyEvent;
   if (readyEvent) {
     await page.waitForEvent('console', (message) => {
       return message === readyEvent;
-    });
+    })
+    .catch(e => printError(e, viewport, scenario));
   }
 
   // Wait for a specific selector
   if (scenario.readySelector) {
-    await page.waitForSelector(scenario.readySelector);
+    await page.waitForSelector(scenario.readySelector)
+      .catch(e => printError(e, viewport, scenario));
   }
 
   // Wait a specific amount of time.
   if (scenario.delay > 0) {
-    await page.waitForTimeout(scenario.delay);
+    await page.waitForTimeout(scenario.delay)
+      .catch(e => printError(e, viewport, scenario));
   }
 
   // Call the onReady script.
@@ -131,4 +134,9 @@ async function processScenariosBrowsersView (scenario, variantOrScenarioLabelSaf
     compareConfig.testPairs.push(currentTestPair);
   }
   return Promise.resolve(compareConfig);
+}
+
+function printError(e, viewport, scenario) {
+  console.log(`ERROR ON ${scenario.label} (${viewport.name})`);
+  console.log(e);
 }
